@@ -1,6 +1,6 @@
 # StatisGoat
 
-Team: Tyler Allen, Ethan Bork, Austin Kelley, Wyatt Light, Gregorius Sukiman 
+Team: Tyler Allen, Ethan Bork, Austin Kelley, Wyatt Light, Gregorius Sukiman
 
 Designed for sports bettors and passionate fans of the beautiful game, StatisGoat will attempt to centralize the resources users need to make reliable, informed predictions on matches from Europe’s most talented leagues. Lineup displays and player-specific stat visualizations will inspire users to challenge their bias and make scientific predictions on match outcomes and events. Comparing these predictions to those of StatisGoat’s human-inspired machine learning algorithms will once again push users to challenge their understanding of the game and integrate what their predictions might have failed to consider. With their updated knowledge, users can engage in passionate discussions about their predictions, or the ones StatisGoat provides them, or head over to their sports book of choice and more accurately evaluate which bets are the best value for money.
 
