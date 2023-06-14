@@ -1,0 +1,190 @@
+﻿@{
+    ViewData["Title"] = "Tutorial";
+}
+
+<main id="main">
+    <div class="container text-center">
+        <div class="row text-center">
+            <div id="section-list" style="margin-left: auto; margin-right: auto;">
+                <br />
+                <h1>Site Tutorial</h1>
+
+                <p>Need help understanding how to use parts of the site? Click on any of the links below to jump straight to a tutorial on each of the available webpages.</p>
+                <ul class="tutorial-nav" style="list-style-type: none;">
+                    <li class="nav-item">
+                        <a class="nav-link" href="#home"><span>Home Page</span></a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#match"><span>Match Details</span></a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#team"><span>Team Details</span></a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#player"><span>Player Details</span></a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#team-list"><span>Teams List</span></a>
+                    </li>
+                    <li class=" " nav-item">
+                        <a class="nav-link" href="#player-list"><span>Players List</span></a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <br />
+        <div style="border-bottom: 1px solid gray;"></div>
+        <br />
+        <div class="row">
+            <div id="home" style="margin-left: auto; margin-right: auto;">
+                <h1>Home Page</h1>
+                <img src="~/images/home-page.png" width="1300" height="600" />
+                <p>
+                    The Home Page is the first page you land on when browsing the site. It offers many tools to allow you to browse, customize, and quickly see match details for a large variety of dates.
+                    When clicking on a date on the calendar (left), the matches table will refresh with the games scheduled for that day. Below the calendar are the top performing players (by rating) for that day.
+                    The matches table will display each of the games for a given day, showing the time it starts, each of the teams playing, the score, and our prediction for chance of winning for each team as well
+                    as the chance of a tie (red bar is % chance for Home team to win, blue is % chance for Away team to win, and gray is % chance for a tie). Clicking the "Details" for any game will bring you to
+                    the match details page for that game. Clicking on any of the leagues on the right will display only the games for that league on that given day.
+                </p>
+            </div>
+        </div>
+        <br />
+        <div style="border-bottom: 1px solid gray;"></div>
+        <br />
+        <div class="row">
+            <div id="match" style="margin-left: auto; margin-right: auto;">
+                <h1>Match Details</h1>
+                <img src="~/images/match-details-top.png" width="1100" height="500" />
+                <p>
+                    The Match Details page holds all of the data on a given game. The very top of the page holds a navbar that allows easy browsing through all of the sections included on the match details page.
+                    Along with the navbar, it also gives a quick overview of the location, date, and time the game was played, as well as the Home/Away team and the score of the game.
+                </p>
+                <br />
+                <div style="border-bottom: 1px solid gray;"></div>
+                <br />
+                <img src="~/images/match-details-events.png" width="1300" height="300" />
+                <p>
+                    The Match Events timeline gives a quick overview of the important events that occurred during the match; all goals, substitutions, and cards are displayed on the timeline the minute they occurred.
+                    Hovering over any of the events will give a more in-depth description of the event along with the exact minute it occurred.
+                </p>
+                <br />
+                <div style="border-bottom: 1px solid gray;"></div>
+                <br />
+                <img src="~/images/match-details-player-stats.png" width="1300" height="600" />
+                <p>
+                    The Player Stats section holds all of the player-specific statistics for a given game. The field on the left pictures all of the players that started the game, aligning them to their correct position.
+                    Clicking on any player will bring up a table that goes in-depth about a large variety of statistics, both their actual statistics and our predictions. To the right of the field is a quick way to
+                    visualize the top performers (for the whole match) for a variety of categories, from Rating, to Goals, to Passes, and Fouls. Clicking on any category will bring up the top three actual performers,
+                    displaying their image, name, expected vs. actual rating, and stats specific to the sorting category. It will also bring up our top three predicted performers for that category, along with our
+                    predicted rating and predicted stats specific to each category.
+                </p>
+                <br />
+                <div style="border-bottom: 1px solid gray;"></div>
+                <br />
+                <img src="~/images/match-details-lineups.png" width="1100" height="500" />
+                <p>
+                    The lineups tables display the players on each team for a given match. Each player's position, number, and number of minutes played are also displayed.
+                </p>
+                <br />
+                <div style="border-bottom: 1px solid gray;"></div>
+                <br />
+                <img src="~/images/match-details-team-stats.png" width="1300" height="500" />
+                <p>
+                    The Team Stats section holds important team-specific statistics for a given match. The table of the left compares each team's stats ranging from expected rating (xRating) to number of corners,
+                    as well as our prediction for many of the stats shown by parentheses (). The graph on the right is another way to visualize the data, allowing for easy comparisons between team stats, as well as
+                    comparing our predictions with the actual statistics.
+                </p>
+                <br />
+                <div style="border-bottom: 1px solid gray;"></div>
+                <br />
+                <img src="~/images/match-details-match-history.png" width="1200" height="400" />
+                <p>
+                    The Match History section details up to 5 of each team's previous 5 games. It gives a quick overview of the league, date, result, score, and opponent for each team. Clicking the opponent or "Details"
+                    will bring you to the team details or match details pages respectively.
+                </p>
+                <br />
+                <div style="border-bottom: 1px solid gray;"></div>
+                <br />
+                <img src="~/images/match-details-comments.png" width="1100" height="500" />
+                <p>
+                    The Comments section on a Match details page allows for signed-in users to discuss a game with other users. It allows you to leave your own comment, reply to other users, and/or like/dislike other
+                    comments.
+                </p>
+                <br />
+                <div style="border-bottom: 1px solid gray;"></div>
+                <br />
+            </div>
+        </div>
+        <div class="row">
+            <div id="team" style="margin-left: auto; margin-right: auto;">
+                <h1>Team Details</h1>
+                <img src="~/images/team-details-roster-top-players.png" width="1300" height="600" />
+                <p>
+                    The Team details page includes a few tables to better visualize the roster and top players under the given statistics, as well as a graph to easily visualize a variety of statistics.
+                    The Roster table shows each of the players that play for the given team, and when any player is clicked on, will bring you to their details page. The three tables opposite of the roster table
+                    denote the top performing players in Rating, Goals, and Assists over the team's last 10 games. Each of the tables display the player, their average rating, cumulative goals and assists, and the
+                    number of games they participated in.
+                </p>
+                <br />
+                <div style="border-bottom: 1px solid gray;"></div>
+                <br />
+                <img src="~/images/team-details-match-history.png" width="1400" height="550" />
+                <p>
+                    The Match History table offers a deeper look into which teams the team has played in each of their last 10 games. It offers a quick look at which league and date the match was played,
+                    if the team won or lost, the score, and who they played. If the "Details" is clicked on any of the games, it will redirect to the details page of that match.
+                </p>
+                <br />
+                <div style="border-bottom: 1px solid gray;"></div>
+                <br />
+                <img src="/images/team-details-team-statistics.png" width="1400" height="550" />
+                <p>
+                    The Team Statistics graph gives an in-depth look at a variety of categories for the team over the last 10 games. Clicking on any of the categories below the graph with change it to display both
+                    the actual stat of the team as well as our prediction for that stat for each of the previous 10 games. Hovering over the white dot on the red line will give more information on the opposing team
+                    and the result of the game.
+                </p>
+                <br />
+                <div style="border-bottom: 1px solid gray;"></div>
+                <br />
+            </div>
+        </div>
+        <div class="row">
+            <div id="player" style="margin-left: auto; margin-right: auto;">
+                <h1>Player Details</h1>
+                <img src="~/images/player-details.png" width="1200" height="400" />
+                <p>
+                    The Player details page allows you to dive deeper into a specific player's info. and statistics. The left side of the page denotes the player's information like his name, birthday, and the team
+                    they play for, and when the team's logo is clicked, it will bring you to that team's details page. The right side of the page graphs a player's statistics for a variety of categories over the course of their past 10 games,
+                    visualizing both their actual statistics over those games, as well as our predictions for how the player would perform.
+                </p>
+                <br />
+                <div style="border-bottom: 1px solid gray;"></div>
+                <br />
+            </div>
+        </div>
+        <div class="row">
+            <div id="team-list" style="margin-left: auto; margin-right: auto;">
+                <h1>Teams List</h1>
+                <img src="~/images/team-list.png" width="1100" height="500" />
+                <p>
+                    The Teams List page offers an easy way to browse, sort, or favorite your favorite teams. The "Sort by" list above the table allows you to sort the displayed teams by their country. Clicking
+                    on a team's logo will bring you to that team's details page where you can dive deeper into theirplayers and statistics. If you are signed in, a "Favorite?" column will appear and, when clicking
+                    on a team's star, will favorite the team to more easily keep up with the team on the Home page.
+                </p>
+                <br />
+                <div style="border-bottom: 1px solid gray;"></div>
+                <br />
+            </div>
+        </div>
+        <div class="row">
+            <div id="player-list" style="margin-left: auto; margin-right: auto;">
+                <h1>Player List</h1>
+                <img src="~/images/players-list.png" width="1300" height="500" />
+                <p>
+                    The Player List page is an easy way to browse, search, and sort to quickly find your favorite players. Clicking on either the player image/name or the team logo/name will bring you to their
+                    respective details page. This page may take a minute to load from the number of players we offer data for.
+                </p>
+                <br />
+            </div>
+        </div>
+    </div>
+</main>

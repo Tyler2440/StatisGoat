@@ -1,0 +1,77 @@
+﻿@page
+@model StatisGoat.Areas.Identity.Pages.AdminRolesControllerModel
+@{
+}
+
+@using Microsoft.AspNetCore.Identity
+@using StatisGoat.Areas.Identity.Data
+
+@inject SignInManager<SGUser> SignInManager
+@inject UserManager<SGUser> UserManager
+<!--
+    Author:    Tyler Allen
+    Partner:   Ben Malohi
+    Date:      October 8, 2021
+    Course:    CS 4540, University of Utah, School of Computing
+    Copyright: CS 4540 and Tyler Allen, Ben Malohi - This work may not be copied for use in Academic Coursework.
+    We, Tyler Allen and Ben Malohi, certify that we wrote this code from scratch and did not copy it in part or whole from
+    another source.  Any references used in the completion of the assignment are cited in my README file.
+    File Contents
+    This is the page that allows an admin to edit what roles a user has
+-->
+<head>
+    <h1>Edit User Roles Below.</h1>
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.3/css/jquery.dataTables.css">
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.js"></script>
+</head>
+<body>
+    <!--Data table for the admins to swtich roles-->
+    <table id="roletable" class="display" onload="data_table()">
+        <thead>
+            <tr>
+                <th class="th-sm">Name</th>
+                <th class="th-sm">Administrator</th>
+                <th class="th-sm">Professor</th>
+                <th class="th-sm">Applicant</th>
+            </tr>
+        </thead>
+        <tbody>
+            @{
+                //displays each user and a toggle switch in the table
+                foreach (var user in UserManager.Users)
+                {
+                    var id = user.Id;
+                    var role = await UserManager.GetRolesAsync(user);
+                    <tr>
+                        <td>
+                            <p>@user.Name</p>
+                        </td>
+                        <td>
+                            <div class="custom-control custom-switch">
+                                <input onchange="toggle_role('@id', 'Administrator')" data-x=@($"switchAdmin{user.Id}") type="checkbox" class="custom-control-input" id=@($"switchAdmin{user.Id}") checked=@role.Contains("Administrator")>
+                                <label class="custom-control-label" for=@($"switchAdmin{user.Id}")></label>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="custom-control custom-switch">
+                                <input onchange="toggle_role('@id', 'Professor')" data-x=@($"switchProfessor{user.Id}") type="checkbox" class="custom-control-input" id=@($"switchProfessor{user.Id}") checked="@role.Contains("Professor")">
+                                <label class="custom-control-label" for=@($"switchProfessor{user.Id}")></label>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="custom-control custom-switch">
+                                <input onchange="toggle_role('@id', 'Applicant')" data-x=@($"switchApplicant{user.Id}") type="checkbox" class="custom-control-input" id=@($"switchApplicant{user.Id}") checked="@role.Contains("Applicant")">
+                                <label class="custom-control-label" for=@($"switchApplicant{user.Id}")></label>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+</body>
+
+@section Scripts
+{
+    <script src="~/js/ajax.js"></script>
+}

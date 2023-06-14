@@ -1,0 +1,206 @@
+﻿@using Microsoft.AspNetCore.Http
+@using Newtonsoft.Json
+@using StatisGoat.Authentication
+@using StatisGoat.Favoriting
+@model StatisGoat.WebApp.Models.Home
+@{
+    ViewData["Title"] = "Index";
+}
+
+@inject IFavoriteTeamsRepository favoriteTeamsRepository
+@inject IAuthenticationRepository authenticationRepository
+@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
+@{
+    ViewData["Title"] = "Index";
+
+    var session = HttpContextAccessor.HttpContext.Request.Cookies["StatisGoatSession"];
+
+    List<int> favTeams = null;
+    if (session != null && await authenticationRepository.IsSessionValidAsync(session))
+    {
+        favTeams = await favoriteTeamsRepository.GetFavoriteTeamsBySessionAsync(session);
+    }
+    else
+    {
+        session = null;
+    }
+}
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="/docs/4.0/assets/img/favicons/favicon.ico">
+
+    <!-- Bootstrap core CSS -->
+    <link href="../../dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <link href="product.css" rel="stylesheet">
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
+    <link rel="stylesheet" href="/resources/demos/style.css">
+    <link rel="stylesheet" href="/css/calendar.css">
+    <script src="https://jsuites.net/v4/jsuites.js"></script>
+
+</head>
+<body>
+    <div class="text-center mb-6">
+        <h1 id="home-header" class="display-4 font-weight-normal">Today's Matches</h1>
+        <div class="tooltip-help" style="transform: translate(0px, -10px);">
+            Help
+            <span class="tooltiphelptext" style="transform: translate(-30%, 0%);">Click "Details" to learn more about each game. The balance of power (red, gray, blue) represents our predictions for each team to win, and the chance of a draw.</span>
+        </div>
+    </div>
+    <script>
+        var favTeams = @Html.Raw(JsonConvert.SerializeObject(favTeams))
+    </script>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-2 text-center">
+                <div id='calendar' style="pointer-events:all"></div>
+                <div>
+                </div>
+                <div class="row">
+                    <div class="col-12 text-center">
+                        <table style="width:100%">
+                            <thead>
+                                <tr>
+                                    <th>Top Players (Rating)</th>
+                                </tr>
+                            </thead>
+                            <tbody id="top-players">
+                                @foreach (var player in Model.topPlayers)
+                                {
+                                    <tr>
+                                        @if (player.Nickname != "")
+                                        {
+                                            <td><a asp-controller="Player" asp-action="Details" asp-route-id=@player.PID>@player.Nickname (@player.Rating)</a></td>
+                                        }
+                                        @if (player.Nickname == "")
+                                        {
+                                            <td><a asp-controller="Player" asp-action="Details" asp-route-id=@player.PID>@player.First @player.Last (@player.Rating)</a></td>
+                                        }
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-8 text-center">
+                <div id="spinner" style="display:none"></div>
+                <table id="matches-table" style="width: 100%" class="table_style">
+                    <thead>
+                        <tr>
+                            <th>Time</th>
+                            <th>Home</th>
+                            <th>Score</th>
+                            <th>Away</th>
+                            <th>Game Details</th>
+                        </tr>
+                    </thead>
+                    <tbody id="matches-table-body">
+                        @foreach (var match in Model.todaysMatches)
+                        {
+                            <tr>
+                                <td><a asp-controller="Team" asp-action="Details" asp-route-id=@match.HomeId><img src=@match.HomeBadge /></a><p><a asp-controller="Team" asp-action="Details" asp-route-id=@match.HomeId>@Html.DisplayFor(model => match.HomeName)</a></p></td>
+                                <td><a style="margin-right:10px;"><h1>@match.Result</h1></a></td>
+                                <td><a asp-controller="Team" asp-action="Details" asp-route-id=@match.AwayId><img src=@match.AwayBadge /></a><p><a asp-controller="Team" asp-action="Details" asp-route-id=@match.AwayId>@Html.DisplayFor(model => match.AwayName)</a></p></td>
+                                <td><a style="margin-right:10px" asp-controller="Match" asp-action="Details" asp-route-id="@match.MatchId">Details</a></td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+            <div class="col-md-2 text-center">
+                <div class="row">
+                    <div class="col-12 text-center">
+                        <table style="width:100%" id="leagues-table">
+                            <thead>
+                                <tr>
+                                    <th>Leagues</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Bundesliga</td>
+                                </tr>
+                                <tr>
+                                    <td>La Liga</td>
+                                </tr>
+                                <tr>
+                                    <td>Ligue 1</td>
+                                </tr>
+                                <tr>
+                                    <td>Serie A</td>
+                                </tr>
+                                <tr>
+                                    <td>Premier League</td>
+                                </tr>
+                                <tr>
+                                    <td>UEFA Champions League</td>
+                                </tr>
+                                <tr class="selected-league">
+                                    <td>All Leagues</td>
+                                </tr>
+
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <br />
+                <br />
+                @if (favTeams != null)
+                {
+                    <div class="row">
+                        <div class="col-12 text-center">
+                            <table style="width:100%" id="favorite-teams">
+                                <thead>
+                                    <tr>
+                                        <th colspan="5">Your Teams</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="favorite-teams-body">
+                                    @foreach (var match in Model.todaysMatches)
+                                    {
+                                        @if (favTeams.Contains(match.HomeId) || favTeams.Contains(match.AwayId))
+                                        {
+                                            <tr>
+                                                <td><a asp-controller="Team" asp-action="Details" asp-route-id=@match.HomeId><img width="60" height="60" src=@match.HomeBadge /></a></td>
+                                                <td width="50px">@match.Result</td>
+                                                <td><a asp-controller="Team" asp-action="Details" asp-route-id=@match.AwayId><img width="60" height="60" src=@match.AwayBadge /></a></td>
+                                                <td><a style="margin-right:10px" asp-controller="Match" asp-action="Details" asp-route-id="@match.MatchId">Details</a></td>
+                                            </tr>
+                                        }
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+
+
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script>window.jQuery || document.write('<script src="../../assets/js/vendor/jquery-slim.min.js"><\/script>')</script>
+    <script src="../../assets/js/vendor/popper.min.js"></script>
+    <script src="../../dist/js/bootstrap.min.js"></script>
+    <script src="../../assets/js/vendor/holder.min.js"></script>
+    @*<script>
+            Holder.addTheme('thumb', {
+                bg: '#55595c',
+                fg: '#eceeef',
+                text: 'Thumbnail'
+            });
+        </script>*@
+</body>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script src="/js/Home.js"></script>
+

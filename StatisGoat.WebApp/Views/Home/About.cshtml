@@ -1,0 +1,265 @@
+﻿@{
+    ViewData["Title"] = "About";
+}
+
+<main id="main">
+    <div class="carousel slide" data-ride="carousel">
+        <div class="carousel-inner" style="height: 400px;">
+            <div class="carousel-item active centered">
+                <p style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: white; font-size: xxx-large; -webkit-text-stroke: 2px black;">Welcome to StatisGoat!</p>
+                <img width="600" height="350" class="d-block w-100" src="~/images/messivsronaldo.png" alt="Source: https://www.goal.com/en/news/ronaldo-vs-messi-el-clasico-best-stats-goals-win-record/pl0j1he59li01ik32p8d3sp1b"
+                     style="object-fit: scale-down;" />
+            </div>
+        </div>
+    </div>
+    <br />
+    <div style="border-bottom: 1px solid gray;"></div>
+    <br />
+    <div class="container">
+        <div class="row text-center">
+            <div id="about" style="width: 75%; margin-left: auto; margin-right: auto;">
+                <h2>What We <strong>Do</strong></h2>
+                <p>
+                    Designed for passionate fans of the beautiful game, StatisGoat will attempt to centralize the resources users need to stay up to date with their favorite European soccer leagues and make
+                    informed predictions on how the best teams and players will play. Lineup displays and player-specific stat visualizations will provide users an analytical viewpoint on matches, inspiring
+                    them to challenge their bias and make scientific predictions on match outcomes and events. Users can evaluate player and team performance by comparing them against the predictions provided
+                    by StatisGoat's human-inspired machine learning algorithms. These predictions will push users to challenge their understanding of the game and integrate what their predictions might have failed
+                    to consider. With their updated knowledge, users can engage in passionate discussions about their predictions, or the ones StatisGoat provides them, and or head over to their sports book of
+                    choice and more accurately evaluate which bets are the best value for money.
+                </p>
+                <h4>Technologies</h4>
+                <p>
+                    Our project contains two C# applications and multiple Python machine learning models which all exist in the cloud, running on an AWS EC2 instance exposed on multiple different ports for different
+                    needs. Additionally, we have a PostgreSQL database hosted on AWS RDS that hosts all of our generated and gathered data.
+                </p>
+            </div>
+        </div>
+        <br />
+        <div style="border-bottom: 1px solid gray;"></div>
+        <br />
+        <div class="row text-center">
+            <div id="tutorial" style="margin-left: auto; margin-right: auto;">
+                <h3>Need Help?</h3>
+                <p>
+                    Looking for help on how to navigate the website? Visit the <a href="/Home/Tutorial">tutorial</a> page for more information.
+                </p>
+            </div>
+        </div>
+        <br />
+        <br />
+        <div style="border-bottom: 1px solid gray;"></div>
+        <br />
+        <div id="team" class="container col-md-6">
+            <div class="section-title text-center">
+                <h2>Our <strong>Team</strong></h2>
+                <div>
+                    <img width="1000" height="500" src="~/images/statisgoat_members.jpg" style="margin-left: auto; margin-right: auto;" />
+                    <br />
+                    <br />
+                </div>
+                <div class="row">
+                    <div class="card col-md-6" style="width: 950px; transform: translate(-5%, 0px)">
+                        <div class="row no-gutters">
+                            <div class="col-sm-5">
+                                <img class="card-img" src="/images/tyler-allen.jpg" style="width: 300px; height: 400px; margin-top: 13%;">
+                                <h2>Tyler Allen</h2>
+                                <p class="title">Front-End Developer</p>
+                            </div>
+                            <div class="col-sm-7">
+                                <div class="card-body" style="width: 600px; transform: translate(-11%, -7%)">
+                                    <p style="font-size: 16px;">
+                                        Hello, I’m Tyler. I am a Computer Science major with strong interest and skill in building web pages via Javascript, HTML/CSS, and C#. While only having a passing interest in
+                                        soccer at the highest level, my strong interest in basketball helped me relate to how I would envision a website providing statistics, visualizations, and predictions on a sport that
+                                        so many people love. This helped form a strong passion for the project, and inspired much of the work I contributed. I worked on each of the pages accessible on the website,
+                                        from the home page to player details page, from their design to their implementation. After graduation, I will be looking for a job to help showcase and further my skills in all
+                                        areas of web development. In addition to Computer Science and basketball, I have strong interest in Video Games and Anime and am always open to discussing about them anytime.
+                                    </p>
+                                    <p>Email: tylerballen40@gmail.com</p>
+                                    <p>LinkedIn: <a href="https://www.linkedin.com/in/tyler-allen24/">Tyler Allen</a></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card col-md-6" style="width: 950px; transform: translate(5%, 0px)">
+                        <div class="row no-gutters">
+                            <div class="col-sm-7">
+                                <div class="card-body" style="width: 600px; transform: translate(-11%, -7%)">
+                                    <p style="font-size: 16px;">
+                                        My name is Austin, I'm majoring in computer science and I have an interest developing websites, whether that be in the front end (JS, HTML, CSS) or the back end (C#, SQL).
+                                        Though not having an extreme interest in soccer/football, I do enjoy front-end development and dabble in graphic design in my free time, so I was looking forward to building
+                                        a website that looked good and showed data visualizations. Overall, I was able to contribute to most of the pages found when navigating through the website and even enjoyed
+                                        designing the StatisGoat logo. Other than that, I am currently interning for Foursight Capital LLC and will continue working there after graduation. My other interests include
+                                        backpacking, fishing, video games, anime, and painting/drawing.
+                                    </p>
+                                    <p>Email: austinftkelley@gmail.com</p>
+                                    <p>LinkedIn: <a href="https://www.linkedin.com/in/austinftkelley/">Austin Kelley</a></p>
+                                </div>
+                            </div>
+                            <div class="col-sm-5">
+                                <img class="card-img" src="/images/austin-kelley.png" style="width: 300px; height: 400px; margin-top: 13%;">
+                                <h2>Austin Kelley</h2>
+                                <p class="title">Front-End Developer</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <br />
+                <div class="row">
+                    <div class="card col-md-6" style="width: 950px; transform: translate(-5%, 0px)">
+                        <div class="row no-gutters">
+                            <div class="col-sm-5">
+                                <img class="card-img" src="/images/wyatt-light.jpg" style="width: 300px; height: 400px; margin-top: 13%;">
+                                <h3>Wyatt Light</h3>
+                                <h7 class="title">Back-End Developer</h7>
+                            </div>
+                            <div class="col-sm-7">
+                                <div class="card-body" style="width: 600px; transform: translate(-11%, -7%)">
+                                    <p style="font-size: 16px;">
+                                        Hello there, I’m Wyatt. I’m a CS Major and I think my strongest areas of skill and interest are databases, algorithms, and machine learning. After graduation, I’m looking
+                                        forward to moving back home to California and starting my job with BAE Systems. While I’ve never played soccer at a high level, I developed a passion for the “beautiful game”
+                                        through the video game FIFA. This passion for soccer inspired me to brainstorm the idea for StatisGoat. I wanted a single place where fans could stay up to date with all the best
+                                        leagues in Europe, while also challenging my ability to predict matches (ask me about the recent World Cup). In addition to CS, Video Games, and Soccer, I’m happy to talk to you
+                                        about Ice Hockey; I’ve played since I was five and I’ve played on there team here at the U throughout my college career.
+                                    </p>
+                                    <p>Email: wlight21@live.com</p>
+                                    <p>LinkedIn: <a href="https://www.linkedin.com/in/wyatt-light-b898101a1/">Wyatt Light</a></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card col-md-6" style="width: 950px; transform: translate(5%, 0px)">
+                        <div class="row no-gutters">
+                            <div class="col-sm-7">
+                                <div class="card-body" style="width: 600px; transform: translate(-11%, -7%)">
+                                    <p style="font-size: 16px;">
+                                        Hi, I am Ethan Bork. I am a soon-to-be Computer Science Undergraduate at the University of Utah. My main focus in the field has always back-end development and was no different
+                                        for my capstone project StatisGoat where I mainly worked on the back-end. Additionally, I have interest in other areas such as machine learning, however, I currently work as a
+                                        Software Engineer at Pluralsight for their identity team. This has granted me a lot of experience with identity related solutions as well as a lot of authentication forms. I have
+                                        had the opportunity to work on a lot of projects professionally such as integrating our platform with Learning Tools Interoperability, migrating non-relational databases to
+                                        relational databases without downtime, and integrating our identity with an acquired companies identity. However, our capstone project provided me with a lot of new experiences
+                                        as well, allowing me to become more proficient in machine learning and creating APIs.
+                                    </p>
+                                    <p>Email: ebork11@gmail.com</p>
+                                </div>
+                            </div>
+                            <div class="col-sm-5">
+                                <img class="card-img" src="/images/ethan-bork.png" style="width: 300px; height: 400px; margin-top: 13%;">
+                                <h2>Ethan Bork</h2>
+                                <p class="title">Back-End Developer</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <br />
+                <div class="row">
+                    <div class="card col-md-6" style="width: 950px; transform: translate(5%, 0px); margin-left: auto; margin-right: auto;">
+                        <div class="row no-gutters">
+                            <div class="col-sm-7">
+                                <div class="card-body" style="width: 600px; transform: translate(-11%, -7%)">
+                                    <p style="font-size: 15px;">
+                                        Hello, My name is Gregorius Jonathan Sukiman. I was born and raised in Jakarta, Indonesia. Ever since I was a child, I have been fascinated by technology, particularly computers.
+                                        As I grew up, this fascination only grew stronger, and I decided to pursue a degree in Data Science outside of my country. I began my journey at a community
+                                        college in California and later on I transferred to the University of Utah. From this journey, I have had opportunities to work on many exciting projects, such as making
+                                        a sports website, making a game, and also making analysis projects which include predictive analysis and exploratory data analysis (EDA). Apart from my academic pursuits, I
+                                        have a few hobbies that keep me busy in my free time. I love cooking and trying out new recipes. I find that it is a great way to relax and unwind after a long day of studying.
+                                        I am also an avid gamer and enjoy playing a variety of games. When I am not gaming or cooking, I like to stay active and participate in activities such as badminton, soccer,
+                                        volleyball, hiking and biking. In the future, I am hoping to continue my work in a data related field including becoming a data scientist or a data analyst.
+                                    </p>
+                                    <p>Email: gregorius.jonathan@gmail.com</p>
+                                </div>
+                            </div>
+                            <div class="col-sm-5">
+                                <img class="card-img" src="/images/greg-sukiman.jpg" style="width: 300px; height: 400px; margin-top: 13%;">
+                                <h2>Gregorius Sukiman</h2>
+                                <p class="title">Back-End Developer</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                @*<div class="card member-info ">
+                        <img src="~/images/wyatt-light.jpg" width="300" height="400" alt="Jane" style="margin-left: auto; margin-right: auto;">
+                        <div class="container">
+                            <h2>Wyatt Light</h2>
+                            <p class="title">Back-End Developer</p>
+                            <p style="font-size: 15px;">
+                                Hello there, I’m Wyatt. I’m a CS Major and I think my strongest areas of skill and interest are databases, algorithms, and machine learning. After graduation, I’m looking
+                                forward to moving back home to California and starting my job with BAE Systems. While I’ve never played soccer at a high level, I developed a passion for the “beautiful game”
+                                through the video game FIFA. This passion for soccer inspired me to brainstorm the idea for StatisGoat. I wanted a single place where fans could stay up to date with all the best
+                                leagues in Europe, while also challenging my ability to predict matches (ask me about the recent World Cup). In addition to CS, Video Games, and Soccer, I’m happy to talk to you
+                                about Ice Hockey; I’ve played since I was five and I’ve played on there team here at the U throughout my college career.
+                            </p>
+                            <p>Email: wlight21@live.com</p>
+                            <p>LinkedIn: <a href="https://www.linkedin.com/in/wyatt-light-b898101a1/">Wyatt Light</a></p>
+                        </div>
+                    </div>*@
+                @*<div class="col-md-4">
+                        <div class="card member-info ">
+                            <img src="~/images/.jpg" width="300" height="400" style="margin-left: auto; margin-right: auto;">
+                            <div class="container">
+                                <h2>Austin Kelley</h2>
+                                <p class="title">Front-End Developer</p>
+                                <p>
+
+                                </p>
+                                <p>Email: </p>
+                                <p>LinkedIn: <a href="">Austin Kelley</a></p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card member-info ">
+                            <img src="~/images/tyler-allen.jpg" width="300" height="400" style="margin-left: auto; margin-right: auto;">
+                            <div class="container">
+                                <h2>Tyler Allen</h2>
+                                <p class="title">Front-End Developer</p>
+                                <p>
+                                    Hello, I’m Tyler. I am a Computer Science major with strong interest and skill in building web pages via Javascript, HTML/CSS, and C#. While only having a passing interest in
+                                    soccer at the highest level, my strong interest in basketball helped me relate to how I would envision a website providing statistics, visualizations, and predictions on a sport that
+                                    so many people love. This helped form a strong passion for the project, and inspired much of the work I contributed. I worked on each of the pages accessible on the website,
+                                    from the home page to player details page, from their design to their implementation. After graduation, I will be looking for a job to help showcase and further my skills in all
+                                    areas of web development. In addition to Computer Science and basketball, I have strong interest in Video Games and Anime and am always open to discussing about them anytime.
+                                </p>
+                                <p>Email: tylerballen40@gmail.com</p>
+                                <p>LinkedIn: <a href="https://www.linkedin.com/in/tyler-allen24/">Tyler Allen</a></p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card member-info ">
+                            <img src="~/images/.jpg" width="300" height="400" style="margin-left: auto; margin-right: auto;">
+                            <div class="container">
+                                <h2>Ethan Bork</h2>
+                                <p class="title">Back-End Developer</p>
+                                <p>
+
+                                </p>
+                                <p></p>
+                                <p>LinkedIn: <a href="">Ethan Bork</a></p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card member-info ">
+                            <img src="~/images/.jpg" width="300" height="400" style="margin-left: auto; margin-right: auto;">
+                            <div class="container">
+                                <h2>Gregorius Sukiman</h2>
+                                <p class="title">Back-End Developer</p>
+                                <p>
+
+                                </p>
+                                <p>Email: </p>
+                                <p>LinkedIn: <a href="">Gregorius Sukiman</a></p>
+                            </div>
+                        </div>
+                    </div>*@
+            </div>
+        </div>
+    </div>
+</main>
+
+<style>
+    .card-body {
+        padding: 4.25rem !important;
+        max-height: 550px;
+    }
+</style>

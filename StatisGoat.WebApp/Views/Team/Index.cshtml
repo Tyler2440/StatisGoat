@@ -1,0 +1,92 @@
+﻿@using Microsoft.AspNetCore.Http
+@using Newtonsoft.Json
+@using StatisGoat.Authentication
+@using StatisGoat.Favoriting
+@model IEnumerable<StatisGoat.WebApp.Models.Team>
+
+@inject IFavoriteTeamsRepository favoriteTeamsRepository
+@inject IAuthenticationRepository authenticationRepository
+@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
+@{
+    ViewData["Title"] = "Index";
+
+    var session = HttpContextAccessor.HttpContext.Request.Cookies["StatisGoatSession"];
+
+    List<int> favTeams = null;
+    if (session != null && await authenticationRepository.IsSessionValidAsync(session))
+    {
+        favTeams = await favoriteTeamsRepository.GetFavoriteTeamsBySessionAsync(session);
+    }
+    else
+    {
+        session = null;
+    }
+}
+
+<div class="text-center mb-4">
+    <h1>Teams</h1>
+</div>
+<div class="container">
+    <div class="row">
+        <div class="col-md-2 text-center"></div>
+        <div class="col-md-8 text-center">
+            <script>
+                var data = @Html.Raw(JsonConvert.SerializeObject(Model))
+                var favTeams = @Html.Raw(JsonConvert.SerializeObject(favTeams))
+                var session = @Html.Raw(JsonConvert.SerializeObject(session))
+            </script>
+            <h6>Sort by</h6>
+            <div id="sort-by-buttons" class="btn-group-horizontal" style="width: fit-content; margin:auto">
+                <button type="button" class="btn btn-secondary active">All</button>
+                <button type="button" class="btn btn-secondary">England</button>
+                <button type="button" class="btn btn-secondary">Spain</button>
+                <button type="button" class="btn btn-secondary">Germany</button>
+                <button type="button" class="btn btn-secondary">Italy</button>
+                <button type="button" class="btn btn-secondary">France</button>
+                <button type="button" class="btn btn-secondary">Others</button>
+            </div>
+            <table id="teams-list" class="table">
+                <thead>
+                    <tr>
+                        @{
+                            if (session != null)
+                            {
+                                <th>Favorite?</th>
+                            }
+                        }
+                        <th>Nation</th>
+                        <th>Badge</th>
+                        <th>Team</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (Team team in Model.ToList())
+                    {
+                        <tr>
+                            @{
+                                if (session != null) 
+                                {
+                                    if (favTeams.Contains(@team.TID)) 
+                                    {
+                                        <td id="@team.TID" style="cursor: pointer; color: yellow; text-shadow: 0 0 3px black; font-size: 30px;" onclick="favoriteTeam(this)">★</td>
+                                    }
+                                    else 
+                                    {
+                                        <td id="@team.TID" style="cursor: pointer; color: #dbdbdb; text-shadow: 0 0 3px black; font-size: 30px; " onclick="favoriteTeam(this)">★</td>
+                                    }
+                                }
+                             }
+                            <td>@team.Nation</td>
+                            <td><img src=@team.Badge /></td>
+                            <td class="align-middle"><a asp-controller="Team" asp-action="Details" asp-route-id="@team.TID">@team.Teamname</a></td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+        <div class="col-md-2 text-center"></div>
+    </div>
+</div>
+@section Scripts{
+    <script src="~/js/Teamslist.js" asp-append-version="true"></script>
+}

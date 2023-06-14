@@ -1,0 +1,895 @@
+﻿@using Newtonsoft.Json
+@using StatisGoat.Authentication
+@model StatisGoat.WebApp.Models.Match
+
+@{
+    ViewData["Title"] = "Details";
+}
+@inject IAuthenticationRepository authenticationRepository
+@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
+@{
+    ViewData["Title"] = "Index";
+
+    var session = HttpContextAccessor.HttpContext.Request.Cookies["StatisGoatSession"];
+
+    if ( session != null && await authenticationRepository.IsSessionValidAsync(session))
+    {
+
+    }
+    else
+    {
+        session = null;
+    }
+
+
+}
+
+<body data-spy="scroll" data-target="#myScrollspy" data-offset="0">
+    <script>
+        var data = @Html.Raw(JsonConvert.SerializeObject(Model))
+        var accountID = @Html.Raw(JsonConvert.SerializeObject(session))
+    </script>
+    <header>
+        <nav id="navbar_top" class="secondary-Nav navbar-expand-sm navbar-toggleable-sm navbar-dark bg-white border-bottom box-shadow mb-3">
+            <div class="container">
+                <div class="navbar-collapse collapse d-sm-inline-flex flex-sm-row-reverse" style="padding-left: 16px">
+                    @if (Model.matchesInfoRecord.Status != "NS")
+                    {
+                        <ul class="navbar-nav flex-grow-1">
+                            <li class="nav-item">
+                                <a class="nav-link text-light " href="#details"><span>Details</span></a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-light" href="#highlights"><span>Events</span></a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-light" href="#player-stats"><span>Player Stats</span></a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-light" href="#lineups"><span>Lineups</span></a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-light" href="#team-stats"><span>Teams Stats</span></a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-light" href="#history"><span>History</span></a>
+                            </li>
+                            <li class=" "nav-item">
+                                <a class="nav-link text-light" href="#chat"><span>Comments</span></a>
+                            </li>
+                        </ul>
+                    }
+                    @if (Model.matchesInfoRecord.Status == "NS")
+                    {
+                        <ul class="navbar-nav flex-grow-1">
+                            <li class="nav-item">
+                                <a class="nav-link text-light" href="#details"><span>Match Details</span></a>
+                            </li>
+                            @if (Model.homeLineups.Count != 0)
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link text-lightd" href="#lineups"><span>Lineups</span></a>
+                                </li>
+                            }
+                            @if (Model.xHomeStatistics.Opponentname != "")
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link text-light" href="#team-stats"><span>Teams Stats</span></a>
+                                </li>
+                            }
+                            <li class="nav-item">
+                                <a class="nav-link text-light" href="#history"><span>History</span></a>
+                            </li>
+                        </ul>
+                    }
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <span class="player_tooltips" id="tooltip"></span>
+    <div id="outside-div" onmousedown="hoverOff()" style="background-color: #9b999954;">
+        @{
+            string margin = "0px";
+            @if (Model.matchesInfoRecord.Status != "NS")
+            {
+                margin = "-25px";
+            }
+            <div id="details" style="background-color: white; margin-bottom : @margin;">
+                <div class="text-center mb-4">
+                    <h1>Match Details</h1>
+                </div>
+
+                <div class="container text-center">
+                    <dl class="text-center">
+                        <dt class="">
+                            Location:
+                        </dt>
+                        <dd class="">
+                            @Model.matchesInfoRecord.Venue
+                        </dd>
+                        <dt class="">
+                            Date:
+                        </dt>
+                        <dd class="">
+                            @Model.matchesInfoRecord.DateTime.ToLocalTime().ToString("MMM. dd, h:mm tt") MST
+                        </dd>
+                    </dl>
+                </div>
+                <div class="row">
+                    <div class="col-md-4 text-center">
+                        <a asp-controller="Team" asp-action="Details" asp-route-id="@Model.matchesInfoRecord.HomeId"><img class="team-badge-image" width="200" height="200" src=@Model.matchesInfoRecord.HomeBadge /></a>
+                        <p><a asp-controller="Team" asp-action="Details" asp-route-id="@Model.matchesInfoRecord.HomeId">@Model.matchesInfoRecord.HomeName</a></p>
+                        <h1>Home</h1>
+                    </div>
+                    <div class="col-md-4" style="display:grid; align-items:center; text-align:center; ">
+
+                        <h1 style="position:relative !important">@Model.homeScore - @Model.awayScore</h1>
+                    </div>
+                    <div class="col-md-4 text-center">
+                        <a asp-controller="Team" asp-action="Details" asp-route-id="@Model.matchesInfoRecord.AwayId"><img class="team-badge-image" width="200" height="200" src=@Model.matchesInfoRecord.AwayBadge /></a>
+                        <p><a asp-controller="Team" asp-action="Details" asp-route-id="@Model.matchesInfoRecord.AwayId">@Model.matchesInfoRecord.AwayName</a></p>
+                        <h1>Away</h1>
+                    </div>
+                </div>
+            </div>
+
+            @if (Model.matchesInfoRecord.Status != "NS")
+            {
+                <br />
+                <div style="border-bottom: 1px solid gray;"></div>
+                <br />
+                <div id="highlights" class="container">
+
+                    <div class="text-center">
+                        <h2>Match Events</h2>
+                        <div id="match-timeline" class="mb-4 text-center" style="position:relative"></div>
+                    </div>
+                </div>
+            }
+            <div style="border-bottom: 1px solid gray;"></div>
+            <br />
+
+            @if (Model.matchesInfoRecord.Status != "NS")
+            {
+                <div id="player-stats" class="mb-4" style="background-color: white; margin-top: -24px; margin-bottom: -24px !important;">
+                    <div class="container text-center playerStats" style="padding-top: 15px;">
+                        <h2>Player Stats</h2>
+                        <div class="row" style="padding-top: 20px;">
+                            <div class="col-6" style="position:relative; display:block">
+
+                                <ul id="player-formation-list" style="list-style: none;">
+                                    @{
+                                        var count = 50;
+                                        foreach (var p in Model.homeLineups)
+                                        {
+                                            if (p.Grid != "")
+                                            {
+                                                <li class="home-@p.Grid player @count" id="@p.PlayerID" onclick="hover(this)" style="position: absolute; z-index: @count; ">
+                                                    <a>
+                                                        <img class="player-lineup-image" width="50" height="50" src=@p.Headshot style="text-align: center; cursor: pointer;" />
+                                                        @*<p style="position: absolute; font-size: 15px;">@p.LastName</p>*@
+                                                    </a>
+                                                </li>
+
+                                            }
+                                            count--;
+                                        }
+                                        foreach (var p in Model.awayLineups)
+                                        {
+                                            if (p.Grid != "")
+                                            {
+                                                <li class="away-@p.Grid player" id="@p.PlayerID" onclick="hover(this)" style="position: absolute; z-index: 5;">
+                                                    <a>
+                                                        <img class="player-lineup-image" width="50" height="50" src=@p.Headshot style="text-align: center; cursor: pointer;" />
+                                                        @*<p style="position: absolute; font-size: 15px;">@p.LastName</p>*@
+                                                    </a>
+                                                </li>
+                                            }
+                                        }
+                                    }
+                                </ul>
+
+                                <div id="lineup-image" style="position: absolute; top: 50px; left: 75px;">
+                                    <img id="field-image" src="~/images/football-pitch.jpg" alt="Image source: https://www.schoolsplus.co.uk/thamesview/facilities/football-pitch/" width="800" height="500" />
+                                    <div class="overlay">
+                                        <div class="tooltip-help">
+                                            Help
+                                            <span class="tooltiphelptext" style="transform: translate(-30%, 0%);">Click on a player to see their details stats.</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div style="transform: translate(70px, 190px);">
+                                    <h3 style="writing-mode: vertical-lr; transform: rotate(-180deg) translate(75px, -57px);">Home</h3>
+                                    <h3 style="writing-mode: vertical-rl; transform: translate(770px, -35px);">Away</h3>
+                                </div>
+                            </div>
+
+                            <div class="col-6">
+                                <div class="row mb">
+                                    <div class="col-12 text-center">
+                                        <div class="overlay">
+                                            <h6>
+                                                Sort by
+                                                <div class="tooltip-help">
+                                                    (Help)
+                                                    <span class="tooltiphelptext" style="transform: translate(-30%, 0%);">
+                                                        Sort the top performing players for a variety of statistics. The number next to a player's
+                                                        headshot is their rating or expected rating (xRating).
+                                                    </span>
+                                                </div>
+                                            </h6>
+                                        </div>
+                                        <div id="sort-by-buttons" class="btn-group-horizontal" style="width: fit-content; margin:auto">
+                                            <button type="button" class="btn btn-secondary active">Rating</button>
+                                            <button type="button" class="btn btn-secondary">Goals</button>
+                                            <button type="button" class="btn btn-secondary">Assists</button>
+                                            <button type="button" class="btn btn-secondary">Goals+Assists</button>
+                                            <button type="button" class="btn btn-secondary">Saves</button>
+                                            <button type="button" class="btn btn-secondary">Passes</button>
+                                            <button type="button" class="btn btn-secondary">Key Passes</button>
+                                            <button type="button" class="btn btn-secondary">Pass %</button>
+                                            <button type="button" class="btn btn-secondary">Tackles</button>
+                                            <button type="button" class="btn btn-secondary">Interceptions</button>
+                                            <button type="button" class="btn btn-secondary">Dribbles</button>
+                                            <button type="button" class="btn btn-secondary">Fouls</button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-6 text-center">
+                                        <h3>Top Performers</h3>
+                                        <ul id="top-performers" style="font-size: 17px; list-style: none;">
+                                            @foreach (var p in Model.sortedTopRatings)
+                                            {
+                                                var playerPerfs = Model.allxPlayerStatistics.Find((x) => x.PID == p.PID);
+                                                @if (Model.homePlayers.Find((x) => x.PID == p.PID) != null)
+                                                {
+                                                    <li class="player-stat-li" style="margin-bottom: 16px;">
+                                                        <a asp-controller="Player" asp-action="Details" asp-route-id="@p.PID"><img class="top-performer-image" width="75" height="75" src=@Model.homePlayers.Find((x) => x.PID == p.PID).Headshot /></a>
+                                                        <a style="font-size: 20px; font-weight: bold;">@(Math.Round(p.Rating * 100) / 100) (@string.Format("{0:+0.#;-0.#;+0.0;}\n", playerPerfs.Rating_perf))</a>
+                                                        @if (p.Nickname != "")
+                                                        {
+                                                            <a asp-controller="Player" asp-action="Details" asp-route-id="@p.PID"><p>@p.Nickname</p></a>
+                                                        }
+                                                        @if (p.Nickname == "")
+                                                        {
+                                                            <a asp-controller="Player" asp-action="Details" asp-route-id="@p.PID"><p>@p.First @p.Last</p></a>
+                                                        }
+                                                        <a>G: @p.Goals (@string.Format("{0:+0.#;-0.#;+0.0;}", playerPerfs.Goals_perf)) | </a>
+                                                        <a>A: @p.Assists (@string.Format("{0:+0.#;-0.#;+0.0;}", playerPerfs.Assists_perf)) | </a>
+                                                        <a>S: @p.Saves (@string.Format("{0:+0.#;-0.#;+0.0;}", playerPerfs.Saves_perf))</a><br>
+                                                    </li>
+                                                }
+                                                @if (Model.awayPlayers.Find((x) => x.PID == p.PID) != null)
+                                                {
+                                                    <li class="player-stat-li" style="margin-bottom: 16px;">
+                                                        <a asp-controller="Player" asp-action="Details" asp-route-id="@p.PID"><img class="top-performer-image" width="75" height="75" src=@Model.awayPlayers.Find((x) => x.PID == p.PID).Headshot /></a>
+                                                        <a style="font-size: 20px; font-weight: bold;">
+                                                            @(Math.Round(p.Rating * 100) / 100) (@string.Format("{0:+0.#;-0.#;+0.0;}\n", playerPerfs.Rating_perf))
+                                                        </a>
+                                                        @if (p.Nickname != "")
+                                                        {
+                                                            <a asp-controller="Player" asp-action="Details" asp-route-id="@p.PID"><p>@p.Nickname</p></a>
+                                                        }
+                                                        @if (p.Nickname == "")
+                                                        {
+                                                            <a asp-controller="Player" asp-action="Details" asp-route-id="@p.PID"><p>@p.First @p.Last</p></a>
+                                                        }
+                                                        <a>G: @p.Goals (@string.Format("{0:+0.#;-0.#;+0.0;}", playerPerfs.Goals_perf))  | </a>
+                                                        <a>A: @p.Assists (@string.Format("{0:+0.#;-0.#;+0.0;}", playerPerfs.Assists_perf)) | </a>
+                                                        <a>S: @p.Saves (@string.Format("{0:+0.#;-0.#;+0.0;}", playerPerfs.Saves_perf))</a><br>
+                                                    </li>
+                                                }
+                                            }
+                                        </ul>
+                                    </div>
+                                    <div class="col-6">
+                                        <div class="mb-4">
+                                            <h3>Top xPerformers</h3>
+                                            <ul id="top-xperformers" style="font-size: 17px; list-style: none;">
+                                                @foreach (var p in Model.sortedxTopRatings)
+                                                {
+                                                    @if (Model.homePlayers.Find((x) => x.PID == p.PID) != null)
+                                                    {
+                                                        <li class="player-stat-li" style="margin-bottom: 16px;">
+                                                            <a asp-controller="Player" asp-action="Details" asp-route-id="@p.PID"><img class="top-performer-image" width="75" height="75" src=@Model.homePlayers.Find((x) => x.PID == p.PID).Headshot /></a>
+                                                            <a style="font-size: 20px; font-weight: bold;">
+                                                                x@(Math.Round(p.xRating * 100) / 100)
+                                                            </a>
+                                                            @if (p.Nickname != "")
+                                                            {
+                                                                <a asp-controller="Player" asp-action="Details" asp-route-id="@p.PID"><p>@p.Nickname</p></a>
+                                                            }
+                                                            @if (p.Nickname == "")
+                                                            {
+                                                                <a asp-controller="Player" asp-action="Details" asp-route-id="@p.PID"><p>@p.First @p.Last</p></a>
+                                                            }
+                                                            <a>xG: @(string.Format("{0:0.#;-0.#;0.0;}", p.xGoals)) | </a>
+                                                            <a>xA: @(string.Format("{0:0.#;-0.#;0.0;}", p.xAssists)) | </a>
+                                                            <a>xS: @(string.Format("{0:0.#;-0.#;0.0;}", p.xSaves)) </a>
+                                                        </li>
+                                                    }
+                                                    @if (Model.awayPlayers.Find((x) => x.PID == p.PID) != null)
+                                                    {
+                                                        <li class="player-stat-li" style="margin-bottom: 16px;">
+                                                            <a asp-controller="Player" asp-action="Details" asp-route-id="@p.PID"><img class="top-performer-image" width="75" height="75" src=@Model.awayPlayers.Find((x) => x.PID == p.PID).Headshot /></a>
+                                                            <a style="font-size: 20px; font-weight: bold;">
+                                                                x@(Math.Round(p.xRating * 100) / 100)
+                                                            </a>
+                                                            @if (p.Nickname != "")
+                                                            {
+                                                                <a asp-controller="Player" asp-action="Details" asp-route-id="@p.PID"><p>@p.Nickname</p></a>
+                                                            }
+                                                            @if (p.Nickname == "")
+                                                            {
+                                                                <a asp-controller="Player" asp-action="Details" asp-route-id="@p.PID"><p>@p.First @p.Last</p></a>
+                                                            }
+                                                            <a>xG: @(string.Format("{0:0.#;-0.#;0;}", p.xGoals)) | </a>
+                                                            <a>xA: @(string.Format("{0:0.#;-0.#;0;}", p.xAssists)) | </a>
+                                                            <a>xS: @(string.Format("{0:0.#;-0.#;0;}", p.xSaves)) </a>
+                                                        </li>
+                                                    }
+                                                }
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <br />
+                <div style="border-bottom: 1px solid gray;"></div>
+            }
+            @if (Model.homeLineups.Count != 0)
+            {
+                <div id="lineups">
+                    <div class="container mb-5">
+                        <div class="row">
+                            <div class="col-md-12 text-center">
+                                <br />
+                                <h2>Lineups</h2>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <table class="table table-scroll table_style">
+                                            <thead>
+                                                <tr>
+                                                    <th>Lineup</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @foreach (var p in Model.homeLineups)
+                                                {
+                                                    <tr>
+                                                        <td><img class="team-lineups-image" width="90" height="90" src=@p.Headshot /></td>
+                                                        @if (p.Nickname != "")
+                                                        {
+                                                            <td class="align-middle"><a asp-controller="Player" asp-action="Details" asp-route-id="@p.PlayerID">@p.Nickname </a></td>
+                                                        }
+                                                        @if (p.Nickname == "")
+                                                        {
+                                                            <td class="align-middle"><a asp-controller="Player" asp-action="Details" asp-route-id="@p.PlayerID">@p.FirstName @p.LastName</a></td>
+                                                        }
+                                                        <td class="align-middle">@p.Position</td>
+                                                        <td class="align-middle">#@p.Number</td>
+                                                        @if (Model.allPlayerStatistics != null)
+                                                        {
+                                                            <td class="align-middle">@Model.allPlayerStatistics.Find(d => d.PID == p.PlayerID).Minutes mins</td>
+                                                        }
+
+                                                    </tr>
+                                                }
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <table class="table table-scroll table_style">
+                                            <thead>
+                                                <tr>
+                                                    <th>Lineup</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @foreach (var p in Model.awayLineups)
+                                                {
+                                                    <tr>
+                                                        <td><img class="team-lineups-image" width="90" height="90" src=@p.Headshot /></td>
+                                                        @if (p.Nickname != "")
+                                                        {
+                                                            <td class="align-middle"><a asp-controller="Player" asp-action="Details" asp-route-id="@p.PlayerID">@p.Nickname</a></td>
+                                                        }
+                                                        @if (p.Nickname == "")
+                                                        {
+                                                            <td class="align-middle"><a asp-controller="Player" asp-action="Details" asp-route-id="@p.PlayerID">@p.FirstName @p.LastName</a></td>
+                                                        }
+                                                        <td class="align-middle">@p.Position</td>
+                                                        <td class="align-middle">#@p.Number</td>
+                                                        @if (Model.allPlayerStatistics != null)
+                                                        {
+                                                            <td class="align-middle">@Model.allPlayerStatistics.Find(d => d.PID == p.PlayerID).Minutes mins</td>
+                                                        }
+                                                    </tr>
+                                                }
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            }
+            @if (Model.homeStatistics != null)
+            {
+                <br />
+                <div style="border-bottom: 1px solid gray;"></div>
+                <br />
+
+                <div id="team-stats" class="mb-4" style="background-color: white; margin-top: -24px; margin-bottom: -24px !important;">
+                    <div class="text-center" style="padding-top: 15px;">
+                        <h2>Team Stats</h2>
+                    </div>
+                    <div class="row">
+                        <script>
+                            var data = @Html.Raw(JsonConvert.SerializeObject(Model))
+                        </script>
+                        <div class="col-md-6">
+                            <div class="center-div">
+                                <table class="table_style team-stats-tables" id="team-stats-table">
+                                    <thead>
+                                        <tr>
+                                            <td>Statistic (vs. expected)</td>
+                                            <td>
+                                                <a asp-controller="Team" asp-action="Details" asp-route-id="@Model.matchesInfoRecord.HomeId">
+                                                    <img class="team-stats-badge" width="100" height="100" src=@Model.matchesInfoRecord.HomeBadge />
+                                                    <p>@Model.matchesInfoRecord.HomeName</p>
+                                                </a>
+                                            </td>
+                                            <td>
+                                                <a asp-controller="Team" asp-action="Details" asp-route-id="@Model.matchesInfoRecord.AwayId">
+                                                    <img class="team-stats-badge" width="100" height="100" src=@Model.matchesInfoRecord.AwayBadge />
+                                                    <p>@Model.matchesInfoRecord.AwayName</p>
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    </thead>
+                                    <tbody style="text-align: center;">
+                                        @if (Model.xHomeStatistics.Opponentname != "")
+                                        {
+                                            <tr>
+                                                <td>xRating</td>
+                                                <td>@((Math.Round(Model.xHomeStatistics.xRating * 10) / 10))</td>
+                                                <td>@((Math.Round(Model.xAwayStatistics.xRating * 10) / 10))</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Goals</td>
+                                                <td>@Model.homeScore (@(Math.Round(Model.xHomeStatistics.xGoals * 10) / 10))</td>
+                                                <td>@Model.awayScore (@(Math.Round(Model.xAwayStatistics.xGoals * 10) / 10))</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Shots</td>
+                                                <td>@Model.homeStatistics.Shots (@(Math.Round(Model.xHomeStatistics.xShots * 10) / 10))</td>
+                                                <td>@Model.awayStatistics.Shots (@(Math.Round(Model.xAwayStatistics.xShots * 10) / 10))</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Shots on Goal</td>
+                                                <td>@Model.homeStatistics.Shots_on_goal</td>
+                                                <td>@Model.awayStatistics.Shots_on_goal</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Saves</td>
+                                                <td>@Model.homeStatistics.Saves (@(Math.Round(Model.xHomeStatistics.xSaves * 10) / 10))</td>
+                                                <td>@Model.awayStatistics.Saves (@(Math.Round(Model.xAwayStatistics.xSaves * 10) / 10))</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Fouls</td>
+                                                <td>@Model.homeStatistics.Fouls (@(Math.Round(Model.xHomeStatistics.xFouls * 10) / 10))</td>
+                                                <td>@Model.awayStatistics.Fouls (@(Math.Round(Model.xAwayStatistics.xFouls * 10) / 10))</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Yellows</td>
+                                                <td>@Model.homeStatistics.Yellows (@(Math.Round(Model.xHomeStatistics.xYellow * 10) / 10))</td>
+                                                <td>@Model.awayStatistics.Yellows (@(Math.Round(Model.xAwayStatistics.xYellow * 10) / 10))</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Reds</td>
+                                                <td>@Model.homeStatistics.Reds (@(Math.Round(Model.xHomeStatistics.xRed * 10) / 10))</td>
+                                                <td>@Model.awayStatistics.Reds (@(Math.Round(Model.xAwayStatistics.xRed * 10) / 10))</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Offsides</td>
+                                                <td>@Model.homeStatistics.Offsides</td>
+                                                <td>@Model.awayStatistics.Offsides</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Corners</td>
+                                                <td>@Model.homeStatistics.Corners</td>
+                                                <td>@Model.awayStatistics.Corners</td>
+                                            </tr>
+                                        }
+                                        @if (Model.xHomeStatistics.Opponentname == "")
+                                        {
+                                            <tr>
+                                                <td>Goals</td>
+                                                <td>@Model.homeScore</td>
+                                                <td>@Model.awayScore</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Shots</td>
+                                                <td>@Model.homeStatistics.Shots</td>
+                                                <td>@Model.awayStatistics.Shots</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Shots on Goal</td>
+                                                <td>@Model.homeStatistics.Shots_on_goal</td>
+                                                <td>@Model.awayStatistics.Shots_on_goal</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Saves</td>
+                                                <td>@Model.homeStatistics.Saves</td>
+                                                <td>@Model.awayStatistics.Saves</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Fouls</td>
+                                                <td>@Model.homeStatistics.Fouls</td>
+                                                <td>@Model.awayStatistics.Fouls</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Yellows</td>
+                                                <td>@Model.homeStatistics.Yellows</td>
+                                                <td>@Model.awayStatistics.Yellows</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Reds</td>
+                                                <td>@Model.homeStatistics.Reds</td>
+                                                <td>@Model.awayStatistics.Reds</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Offsides</td>
+                                                <td>@Model.homeStatistics.Offsides</td>
+                                                <td>@Model.awayStatistics.Offsides</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Corners</td>
+                                                <td>@Model.homeStatistics.Corners</td>
+                                                <td>@Model.awayStatistics.Corners</td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6" style="margin-bottom: 35px">
+                            <svg id="team-comparisons" style="transform: translate(40px, 0px);">
+
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+
+                <br />
+                <div style="border-bottom: 1px solid gray;"></div>
+                <br />
+            }
+            <div id="history" style="margin-top: 10px;">
+                <div class="mb-5 text-center" style="margin-top: -20px;">
+                    <h2>Match History</h2>
+                    <div class="row mb-5">
+                        <div class="col-6 text-center">
+                            <h3>Home</h3>
+                            <div>
+                                <table class="table table-scroll table_style">
+                                    <thead>
+                                        <tr>
+                                            <th>Matches</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody style="height: fit-content">
+                                        @foreach (var m in Model.homePreviousMatchesInfoRecords)
+                                        {
+                                            <tr>
+                                                <td>@m.Competition</td>
+                                                <td>
+                                                    <a>@m.DateTime.Month/@m.DateTime.Day/@m.DateTime.Year</a>
+                                                </td>
+                                                <td>
+                                                    @if (m.HomeId == Model.matchesInfoRecord.HomeId)
+                                                    {
+                                                        @if (int.Parse(m.Result.Split("-")[0]) > int.Parse(m.Result.Split("-")[1]))
+                                                        {
+                                                            <a style="color: green; font-weight: bold;">W</a>
+                                                        }
+                                                        @if (int.Parse(m.Result.Split("-")[0]) < int.Parse(m.Result.Split("-")[1]))
+                                                        {
+                                                            <a style="color: red; font-weight: bold;">L</a>
+                                                        }
+                                                        @if (int.Parse(m.Result.Split("-")[0]) == int.Parse(m.Result.Split("-")[1]))
+                                                        {
+                                                            <a style="color: black; font-weight: bold;">D</a>
+                                                        }
+                                                    }
+                                                    @if (m.AwayId == Model.matchesInfoRecord.HomeId)
+                                                    {
+                                                        @if (int.Parse(m.Result.Split("-")[0]) < int.Parse(m.Result.Split("-")[1]))
+                                                        {
+                                                            <a style="color: green; font-weight: bold;">W</a>
+                                                        }
+                                                        @if (int.Parse(m.Result.Split("-")[0]) > int.Parse(m.Result.Split("-")[1]))
+                                                        {
+                                                            <a style="color: red; font-weight: bold;">L</a>
+                                                        }
+                                                        @if (int.Parse(m.Result.Split("-")[0]) == int.Parse(m.Result.Split("-")[1]))
+                                                        {
+                                                            <a style="color: black; font-weight: bold;">D</a>
+                                                        }
+                                                    }
+                                                </td>
+                                                <td>
+                                                    <a>@m.Result</a>
+                                                </td>
+                                                <td>
+                                                    <a>vs.</a>
+                                                </td>
+                                                <td>
+                                                    @if (m.HomeId == Model.matchesInfoRecord.HomeId)
+                                                    {
+                                                        <a><img class="previous-matches-badge" width="50" height="50" src=@m.AwayBadge style="float: left;" /><a asp-controller="Team" asp-action="Details" asp-route-id="@m.AwayId">@m.AwayName</a></a>
+                                                    }
+                                                    @if (m.AwayId == Model.matchesInfoRecord.HomeId)
+                                                    {
+                                                        <a><img class="previous-matches-badge" width="50" height="50" src=@m.HomeBadge style="float: left;" /><a asp-controller="Team" asp-action="Details" asp-route-id="@m.HomeId">@m.HomeName</a></a>
+                                                    }
+                                                </td>
+                                                <td>
+                                                    <a asp-controller="Match" asp-action="Details" asp-route-id="@m.MatchId">Details</a>
+                                                </td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <div class="col-6 text-center">
+                            <h2>Away</h2>
+                            <div>
+                                <table class="table table-scroll table_style ">
+                                    <thead>
+                                        <tr>
+                                            <th>Matches</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody style="height: fit-content">
+                                        @foreach (var m in Model.awayPreviousMatchesInfoRecords)
+                                        {
+                                            <tr>
+                                                <td>@m.Competition</td>
+                                                <td>
+                                                    <a>@m.DateTime.Month/@m.DateTime.Day/@m.DateTime.Year</a>
+                                                </td>
+                                                <td>
+                                                    @if (m.HomeId == Model.matchesInfoRecord.AwayId)
+                                                    {
+                                                        @if (int.Parse(m.Result.Split("-")[0]) > int.Parse(m.Result.Split("-")[1]))
+                                                        {
+                                                            <a style="color: green; font-weight: bold;">W</a>
+                                                        }
+                                                        @if (int.Parse(m.Result.Split("-")[0]) < int.Parse(m.Result.Split("-")[1]))
+                                                        {
+                                                            <a style="color: red; font-weight: bold;">L</a>
+                                                        }
+                                                        @if (int.Parse(m.Result.Split("-")[0]) == int.Parse(m.Result.Split("-")[1]))
+                                                        {
+                                                            <a style="color: black; font-weight: bold;">D</a>
+                                                        }
+                                                    }
+                                                    @if (m.AwayId == Model.matchesInfoRecord.AwayId)
+                                                    {
+                                                        @if (int.Parse(m.Result.Split("-")[0]) < int.Parse(m.Result.Split("-")[1]))
+                                                        {
+                                                            <a style="color: green; font-weight: bold;">W</a>
+                                                        }
+                                                        @if (int.Parse(m.Result.Split("-")[0]) > int.Parse(m.Result.Split("-")[1]))
+                                                        {
+                                                            <a style="color: red; font-weight: bold;">L</a>
+                                                        }
+                                                        @if (int.Parse(m.Result.Split("-")[0]) == int.Parse(m.Result.Split("-")[1]))
+                                                        {
+                                                            <a style="color: black; font-weight: bold;">D</a>
+                                                        }
+                                                    }
+                                                </td>
+                                                <td>
+                                                    <a>@m.Result</a>
+                                                </td>
+                                                <td>
+                                                    <a>vs.</a>
+                                                </td>
+                                                <td>
+                                                    @if (m.HomeId == Model.matchesInfoRecord.AwayId)
+                                                    {
+                                                        <a><img width="50" height="50" src=@m.AwayBadge style="float: left;" /><a asp-controller="Team" asp-action="Details" asp-route-id="@m.AwayId">@m.AwayName</a></a>
+                                                    }
+                                                    @if (m.AwayId == Model.matchesInfoRecord.AwayId)
+                                                    {
+                                                        <a><img width="50" height="50" src=@m.HomeBadge style="float: left;" /><a asp-controller="Team" asp-action="Details" asp-route-id="@m.HomeId">@m.HomeName</a></a>
+                                                    }
+                                                </td>
+                                                <td>
+                                                    <a asp-controller="Match" asp-action="Details" asp-route-id="@m.MatchId">Details</a>
+                                                </td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    @if (Model.matchesInfoRecord.Status == "NS")
+                    {
+                        <br />
+                        <div style="border-bottom: 1px solid gray;"></div>
+                        <br />
+                        <div class="mb-6" style="background-color: white; margin-top: -24px; margin-bottom: -72px !important;">
+                            <div class="text-center">
+                                <h2>Head to Head Record</h2>
+                            </div>
+                            <div class="row mb-5">
+                                <table id="teams-previous-matches" class="table" style="width: auto; margin-left: auto; margin-right: auto;">
+                                    <thead>
+                                        <tr>
+                                            <th>Home</th>
+                                            <th>Score</th>
+                                            <th>Away</th>
+                                            <th>Date</th>
+                                            <th>Competition</th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody style="height: fit-content">
+                                        @foreach (var m in Model.teamsPreviousMatchesInfoRecords)
+                                        {
+                                            <tr>
+                                                <td>
+                                                    <a><img width="50" height="50" src=@m.HomeBadge style="float: left;" /><a asp-controller="Team" asp-action="Details" asp-route-id="@m.HomeId">@m.HomeName</a></a>
+
+                                                </td>
+                                                <td>
+                                                    <a>@m.Result</a>
+                                                </td>
+                                                <td>
+                                                    <a><img width="50" height="50" src=@m.AwayBadge style="float: left;" /><a asp-controller="Team" asp-action="Details" asp-route-id="@m.AwayId">@m.AwayName</a></a>
+                                                </td>
+                                                <td>
+                                                    <a>@m.DateTime.Month/@m.DateTime.Day/@m.DateTime.Year</a>
+                                                </td>
+                                                <td>
+                                                    <a>@m.Competition</a>
+                                                </td>
+                                                <td>
+                                                    <a asp-controller="Match" asp-action="Details" asp-route-id="@m.MatchId">Details</a>
+                                                </td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+
+            <br />
+            <div style="border-bottom: 1px solid gray;"></div>
+            <br />
+            string color = "white";
+            @if (Model.matchesInfoRecord.Status == "NS")
+            {
+                color = "";
+            }
+            <div id="chat" class="mb-4" style="margin-top: -72px; background-color: @color;">
+                <div id="comment_section" class="container mt-5" style="padding-top: 15px;">
+                    <h2 class="text-center">Comments</h2>
+
+                    <div class="reply_card">
+                        <h4>Leave a comment</h4>
+                        <textarea class='reply_text_area' id="main_reply"></textarea>
+                        <br>
+                        <div class='reply_card_footer'>
+                            <input type='submit' value='submit' onclick='submitReply(this)'>
+                        </div>
+                    </div>
+
+
+                    @foreach (var c in Model.comments)
+                    {
+                        if (c.ThreadID == null)
+                        {
+                            <div class="comment_container opened" id=@c.ChatID>
+                                <div class="comment_card">
+                                    <p><b>@c.First @c.Last</b></p>
+                                    <p>@c.Message</p>
+                                    <div class="row">
+                                        <div class="col-6 likesdislikes">
+                                            <text class="icon-foo fa thumbs_up @(c.Liked ? "liked" : "")" onclick="like_comment(this)" font-family="Font Awesome">&#xf164</text>
+                                            <text class="icon-foo fa thumbs_down @(c.Disliked ? "disliked" : "")" onclick="dislike_comment(this)" font-family="Font Awesome">&#xf165</text>
+                                        </div>
+                                        <div class="comment_card_footer col-6">
+                                            <div class="pntr">Likes @c.Likes</div>
+                                            <div class="pntr">Dislikes @c.Dislikes</div>
+                                            <div onclick="show_replies(this)" class="replies_btn pntr" style="display:none">Replies</div>
+                                            <div class="pntr" onclick="add_reply(this)">Reply</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    }
+                <script id="script">
+                        var comments = @Html.Raw(JsonConvert.SerializeObject(Model.comments))
+
+                            comments.forEach(c => {
+                                if (c.ThreadID != null) {
+                                    let parentDiv = document.getElementById(c.ThreadID)
+
+                                    let parentDivRepliesBtn = parentDiv.getElementsByClassName('replies_btn')[0]
+                                    parentDiv.getElementsByClassName('replies_btn')[0].style.display = "block"
+
+                                    let newCommentContainer = document.createElement('div')
+                                    newCommentContainer.className = "comment_container"
+                                    newCommentContainer.id = c.ChatID
+                                    newCommentContainer.dataset.parent = c.ThreadID
+
+                                    let liked = c.Liked ? "liked" : ""
+                                    let disliked = c.Disliked ? "disliked" : ""
+
+                                    newCommentContainer.innerHTML =  "<div class='comment_card'>" +
+                                        "<p><b>" + c.First + " " + c.Last + "</b></p>" +
+                                    "<p>" + c.Message + "</p>" +
+                                    "<div class='row'>" +
+                                        "<div class='col - 6 likesdislikes'>" +
+                                        "<text class='icon - foo fa thumbs_up " + liked + "' onclick='like_comment(this)' font-family='Font Awesome'>&#xf164</text>" +
+                                            "<text class='icon - foo fa thumbs_down " + disliked + "' onclick='dislike_comment(this)' font-family='Font Awesome''>&#xf165</text>" +
+                                    "</div>" +
+                                        "<div class='comment_card_footer col - 6'>" +
+                                    "<div class='pntr'>Likes " + c.Likes + "</div>" +
+                                    "<div class='pntr'>Dislikes " + c.Dislikes + "</div>" +
+                                    "<div onclick='show_replies(this)' class='replies_btn pntr' style='display: none'>Replies</div>" +
+                                    "<div class='pntr' onclick='add_reply(this)'>Reply</div>" +
+                                    "</div>" +
+                                    "</div>" +
+                                     "</div>"
+
+                                    parentDiv.appendChild(newCommentContainer)
+                                }
+                            })
+                </script>
+                </div>
+            </div>
+        }
+    </div>
+</body>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        window.addEventListener('scroll', function () {
+            if (window.scrollY > 200) {
+                document.getElementById('navbar_top').classList.add('fixed-top');
+                navbar_height = document.querySelector('.navbar').offsetHeight;
+                document.body.style.paddingTop = navbar_height + 'px';
+            } else {
+                document.getElementById('navbar_top').classList.remove('fixed-top');
+                document.body.style.paddingTop = '0';
+            }
+        });
+    });
+</script>
+@section Scripts{
+    <link rel="stylesheet" type="text/css" href="~/css/Matches.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <script src="~/js/Matches.js" asp-append-version="true"></script>
+}

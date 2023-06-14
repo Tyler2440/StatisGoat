@@ -1,0 +1,55 @@
+﻿@using Microsoft.AspNetCore.Identity
+@using StatisGoat.Areas.Identity.Data
+
+@inject UserManager<SGUser> UserManager
+<!--
+    Author:    Tyler Allen
+    Partner:   Ben Malohi
+    Date:      October 10, 2021
+    Course:    CS 4540, University of Utah, School of Computing
+    Copyright: CS 4540 and Tyler Allen, Ben Malohi - This work may not be copied for use in Academic Coursework.
+    We, Tyler Allen and Ben Malohi, certify that we wrote this code from scratch and did not copy it in part or whole from
+    another source.  Any references used in the completion of the assignment are cited in my README file.
+    File Contents
+    This file controls which navbar options are shown to specific users.
+-->
+@{
+    var user = await UserManager.GetUserAsync(User);
+    
+        <a class="nav-link text-dark" href="/Admin/EnrollmentTrends">Enrollment Chart</a>
+    if (user != null)
+    {
+        if (UserManager.IsInRoleAsync(user, "Administrator").Result)
+        {
+            <a class="nav-link text-dark" href="/Applications/List">Applications</a>
+        }
+        else
+        {
+            <a class="nav-link text-dark" href="/Availabilities/Index">Availability</a>
+            <a class="nav-link text-dark" href="/Applications/Index">Applications</a>
+        }
+    }
+
+    @*if (user != null)
+        {
+            if (UserManager.IsInRoleAsync(user, "Administrator").Result)
+            {
+                <a class="nav-link text-dark" href="/Course/Index">Course List</a>
+                <a class="nav-link text-dark" href="/Course/Details/1">Course Details</a>
+                <a class="nav-link text-dark" href="/Course/Edit/1">Course Edit</a>
+                <a class="nav-link text-dark" href="/Course/Create">Create Course</a>
+            }
+            else if (UserManager.IsInRoleAsync(user, "Professor").Result)
+            {
+                <a class="nav-link text-dark" href="/Course/Index">Course List</a>
+                <a class="nav-link text-dark" href="/Course/Details/1">Course Details</a>
+            }
+            else if (UserManager.IsInRoleAsync(user, "Applicant").Result)
+            {
+                if (user.HasApplication)
+                {
+                    <a class="nav-link text-dark" href="/Course/Details/1">Course Details</a>
+                }
+            }
+        }*@
+}

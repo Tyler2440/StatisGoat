@@ -1,0 +1,52 @@
+﻿@using Newtonsoft.Json
+@model IEnumerable<StatisGoat.WebApp.Models.Player>
+
+@{
+    ViewData["Title"] = "Index";
+}
+<head>
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.2/css/jquery.dataTables.min.css" />
+    <script type="text/javascript" src="https://code.jquery.com/jquery-3.5.1.js"></script>
+    <script src="https://cdn.datatables.net/1.13.2/js/jquery.dataTables.min.js" defer></script>
+    <script src="/js/Playerslist.js"></script>
+</head>
+
+<div class="text-center mb-4">
+    <h1>Players</h1>
+</div>
+<div class="container">
+    <div class="row">
+        <div id="spinner" style="display: none; z-index: 10;"></div>
+        <div class="col-md-2 text-center"></div>        
+        <div class="col-8 text-center">
+            <table id="players-list" class="table table_style">
+                <thead>
+                    <tr>
+                        <th class="text-center">Player</th>
+                        <th class="text-center">Badge</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (Player p in Model.ToList())
+                    {
+                        <tr>
+                            @if (p.Nickname == "")
+                            {
+                                <td> <a asp-controller="Player" asp-action="Details" asp-route-id="@p.PID"><img class="player" width="125" height="125" src=@p.Headshot /><p>@p.First @p.Last</p></a></td>
+                            }
+                            @if (p.Nickname != "")
+                            {
+                                <td> <a asp-controller="Player" asp-action="Details" asp-route-id="@p.PID"><img class="player" width="125" height="125" src=@p.Headshot /><p>@p.Nickname</p></a></td>
+                            }
+                            <td> <a asp-controller="Team" asp-action="Details" asp-route-id="@p.TID"><img class="team" width="75" height="75" src=@p.Badge /><p>@p.Teamname</p></a></td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+        <div class="col-md-2 text-center"></div>
+    </div>
+<script>
+    var data = @Html.Raw(JsonConvert.SerializeObject(Model))
+</script>

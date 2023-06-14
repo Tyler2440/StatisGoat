@@ -1,0 +1,37 @@
+﻿@*@model StatisGoat.WebApp.Models.Game
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.id)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.homeid)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.awayid)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.location)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>@Html.DisplayFor(model => model.id)</tr>
+        <tr>@Html.DisplayFor(model => model.homeid)</tr>
+        <tr>@Html.DisplayFor(model => model.awayid)</tr>
+        <tr>@Html.DisplayFor(model => model.location)</tr>
+    </tbody>
+</table>
+
+@section Scripts{
+    <script src="~/js/Games.js" asp-append-version="true"></script>
+}*@

@@ -1,0 +1,258 @@
+﻿@using Newtonsoft.Json
+@using StatisGoat.Player_Statistics;
+@model StatisGoat.WebApp.Models.Team
+
+@{
+    ViewData["Title"] = "Team Details";
+}
+
+<div class="container">
+    <script>
+        var data = @Html.Raw(JsonConvert.SerializeObject(Model))
+    </script>
+    <div id="details" class="row text-center">
+        <div style="margin: 0 auto;">
+            <a><img width="200" height="200" src=@Model.Badge /></a>
+            <h1 style="float: right; margin-top: 100px;">@Model.Teamname</h1>
+        </div>
+    </div>
+
+    <br />
+    <div style="border-bottom: 1px solid gray;"></div>
+    <br />
+
+    <div id="roster-stats">
+        <div id="roster">
+            <div class="container mb-5">
+                <div class="row">
+                    <div class="col-md-6 text-center">
+                        <h1>Roster</h1>
+                        <table class="table table-scroll table_style">
+                            <thead>
+                                <tr>
+                                    &zwnj;
+                                </tr>
+                                <tr>
+                                    <th>Player</th>
+                                </tr>
+                            </thead>
+                            <tbody style="height: 1125px">
+                                @foreach (var p in Model.Roster)
+                                {
+                                <tr>
+                                    <td><img class="roster-image" width="120" height="120" src=@p.Headshot /></td>
+                                    @if (p.Nickname != "")
+                                    {
+                                        <td class="align-middle"><a asp-controller="Player" asp-action="Details" asp-route-id="@p.PID">@p.Nickname</a></td>
+                                    }
+                                    @if (p.Nickname == "")
+                                    {
+                                        <td class="align-middle"><a asp-controller="Player" asp-action="Details" asp-route-id="@p.PID">@Html.DisplayFor(model => p.First) @Html.DisplayFor(model => p.Last)</a></td>
+                                    }
+                                </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="col-md-6 text-center">
+                        <h1>Top Players (last 10 games)</h1>
+                        <div id="top-ratings" class="text-center">
+                            <table class="table table_style">
+                                <thead>
+                                    <tr>
+                                        Top Rating
+                                    </tr>
+                                    <tr>
+                                        <th>Name</th>
+                                        <th>Avg Rating</th>
+                                        <th>Goals</th>
+                                        <th>Assists</th>
+                                        <th>No. Games</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var player in Model.topPlayerRatings)
+                                    {
+                                        <tr>
+                                            <td style="float: left;"><a asp-controller="Player" asp-action="Details" asp-route-id="@player.PID"><img class="top-player-image" width="80" height="80" src=@player.Headshot />@player.Last</a></td>
+                                            <td>@player.Avgrating</td>
+                                            <td>@(Model.topSumPlayerStats.Find(p => p.PID == player.PID).Sumgoals)</td>
+                                            <td>@(Model.topSumPlayerStats.Find(p => p.PID == player.PID).Sumassists)</td>
+                                            <td>@player.Nummatches</td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                        <div id="top-goals" class="text-center">
+                            <table class="table table_style">
+                                <thead>
+                                    <tr>
+                                        Top Goals
+                                    </tr>
+                                    <tr>
+                                        <th>Name</th>
+                                        <th>Avg Rating</th>
+                                        <th>Goals</th>
+                                        <th>Assists</th>
+                                        <th>No. Games</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var player in Model.topPlayerGoals)
+                                    {
+                                    <tr>
+                                        <td style="float: left;"><a asp-controller="Player" asp-action="Details" asp-route-id="@player.PID"><img class="top-player-image" width="80" height="80" src=@player.Headshot />@player.Last</a></td>
+                                        <td>@(Model.topAvgPlayerStats.Find(p => p.PID == player.PID).Avgrating)</td>
+                                        <td>@player.Sumgoals</td>
+                                        <td>@player.Sumassists</td>
+                                        <td>@player.Nummatches</td>
+                                    </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                        <div id="top-assists" class="text-center">
+                            <table class="table table_style">
+                                <thead>
+                                    <tr>
+                                        Top Assists
+                                    </tr>
+                                    <tr>
+                                        <th>Name</th>
+                                        <th>Avg Rating</th>
+                                        <th>Goals</th>
+                                        <th>Assists</th>
+                                        <th>No. Games</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var player in Model.topPlayerAssists)
+                                    {
+                                    <tr>
+                                        <td style="float: left;"><a asp-controller="Player" asp-action="Details" asp-route-id="@player.PID"><img class="top-player-image" width="80" height="80" src=@player.Headshot />@player.Last</a></td>
+                                        <td>@(Model.topAvgPlayerStats.Find(p => p.PID == player.PID).Avgrating)</td>
+                                        <td>@player.Sumgoals</td>
+                                        <td>@player.Sumassists</td>
+                                        <td>@player.Nummatches</td>
+                                    </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <br />
+    <div style="border-bottom: 1px solid gray;"></div>
+    <br />
+
+    <div id="previous-matches" class="text-center">
+        <h2>Match History</h2>
+        <table class="table table-scroll table_style">
+            <thead>
+                <tr>
+                    <th style="text-align: center;">Previous 10</th>
+                </tr>
+            </thead>
+            <tbody style="height: fit-content">
+                @foreach (var m in Model.previousMatches)
+                {
+                    <tr>
+                        <td>
+                            <a>@m.Competition</a>
+                        </td>
+                        <td>
+                            <a>@m.DateTime.Month/@m.DateTime.Day/@m.DateTime.Year</a>
+                        </td>
+                        <td>
+                            @if (m.HomeId == Model.TID)
+                            {
+                                @if (int.Parse(m.Result.Split("-")[0]) > int.Parse(m.Result.Split("-")[1]))
+                                {
+                                    <a style="color: green; font-weight: bold;">W</a>
+                                }
+                                @if (int.Parse(m.Result.Split("-")[0]) < int.Parse(m.Result.Split("-")[1]))
+                                {
+                                    <a style="color: red; font-weight: bold;">L</a>
+                                }
+                                @if (int.Parse(m.Result.Split("-")[0]) == int.Parse(m.Result.Split("-")[1]))
+                                {
+                                    <a style="color: black; font-weight: bold;">D</a>
+                                }
+                            }
+                            @if (m.AwayId == Model.TID)
+                            {
+                                @if (int.Parse(m.Result.Split("-")[0]) < int.Parse(m.Result.Split("-")[1]))
+                                {
+                                    <a style="color: green; font-weight: bold;">W</a>
+                                }
+                                @if (int.Parse(m.Result.Split("-")[0]) > int.Parse(m.Result.Split("-")[1]))
+                                {
+                                    <a style="color: red; font-weight: bold;">L</a>
+                                }
+                                @if (int.Parse(m.Result.Split("-")[0]) == int.Parse(m.Result.Split("-")[1]))
+                                {
+                                    <a style="color: black; font-weight: bold;">D</a>
+                                }
+                            }
+                        </td>
+                        <td>
+                            <a>@m.Result</a>
+                        </td>
+                        <td>
+                            <a>vs.</a>
+                        </td>
+                        <td>
+                            @if (m.HomeId == Model.TID)
+                            {
+                            <p><a asp-controller="Team" asp-action="Details" asp-route-id="@m.AwayId"><img class="previous-match-image" width="50" height="50" src=@m.AwayBadge style="float: left;" />@m.AwayName</a></p>
+                            }
+                            @if (m.AwayId == Model.TID)
+                            {
+                                <a asp-controller="Team" asp-action="Details" asp-route-id="@m.HomeId"><img class="previous-match-image" width="50" height="50" src=@m.HomeBadge style="float: left;" />@m.HomeName</a>
+                            }
+                        </td>
+                        <td>
+                            <a asp-controller="Match" asp-action="Details" asp-route-id="@m.MatchId">Details</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <br />
+    <div style="border-bottom: 1px solid gray;"></div>
+    <br />
+
+    <div id="match-visuals" class="row text-center">
+        <h2 style="margin-left: auto; margin-right: auto;">Team Statistics </h2>
+
+        <svg id="previous-matches-svg">
+        </svg>
+
+        <div id="upcoming-matches" class="row">
+            <svg id="upcoming-matches-svg">
+
+            </svg>
+        </div>
+        <h3 style="text-align: right; transform: translate(110px, 15px);">Stat:</h3>
+        <div id="sort-by-buttons" class="btn-group-horizontal" style="width: fit-content; margin-bottom: auto; transform: translate(120px, 10px);">
+            <button type="button" class="btn btn-secondary active">Scored</button>
+            <button type="button" class="btn btn-secondary">Conceded</button>
+            <button type="button" class="btn btn-secondary">Shots</button>
+            <button type="button" class="btn btn-secondary">Fouls</button>
+            <button type="button" class="btn btn-secondary">Corners</button>
+            <button type="button" class="btn btn-secondary">Offsides</button>
+            <button type="button" class="btn btn-secondary">Possession</button>
+            <button type="button" class="btn btn-secondary">Saves</button>
+            <button type="button" class="btn btn-secondary">Passes</button>
+            <button type="button" class="btn btn-secondary">Pass %</button>
+        </div>
+    </div>
+</div>
+<script src="/js/Teams.js"></script>
